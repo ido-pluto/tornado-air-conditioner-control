@@ -29,7 +29,10 @@ export default class AcControl {
             throw new Error('Response is null');
         }
 
-        this.lastResponse = response;
+        for(const [key, value] of response){
+            this.lastResponse.set(key, value);
+        }
+
         this.onResponse?.(response);
     }
 }

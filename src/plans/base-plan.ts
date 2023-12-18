@@ -1,14 +1,28 @@
 import AcControl from "../ac-control/ac-control.ts";
-import SetPayload from "../ac-control/ac-payload/set-payload.ts";
 import { AcPower, AcValues } from "../ac-control/ac-payload/types.ts";
 import AcAbortError from "./errors/ac-abort-error.ts";
 import AcOffError from "./errors/ac-off-error.ts";
 
 export default abstract class BasePlan {
+    /**
+     * Default sleep interval (45 minutes)
+     */
     protected _SLEEP_INTERVAL = 1000 * 60 * 45;
 
+    /**
+     * Latest AC values, update after each request (comes with response)
+     * @example
+     * // Check Fan Speed
+     * if(this._acValues[AcValues.FanSpeed] === AcFanSpeed.Auto){
+     *    // Do something
+     * }
+     */
+    protected get _acValues() {
+        return Object.fromEntries(this._acControl.lastResponse.entries());
+    }
+
     protected get _acTemp() {
-        return this._acControl.lastResponse.get(AcValues.Temperature) || 0;
+        return this._acValues[AcValues.Temperature] || 0;
     }
 
     protected constructor(protected _acControl: AcControl, protected _abortController: AbortController = null!){
@@ -29,7 +43,10 @@ export default abstract class BasePlan {
         return response?.get(AcValues.EnvironmentTemperature) || NaN;
     }
 
-    abstract run(abortSignal: AbortSignal): Promise<void>;
+    /**
+     * The main function of the plan
+     */
+    abstract run(): Promise<void>;
 
     /**
      * Sleep for a certain amount of time, if the abort signal is aborted, it will return false
@@ -60,6 +77,13 @@ export default abstract class BasePlan {
             this._abortController.abort(error.message);
             throw error;
         }
+    }
+
+    /**
+     * Refetch the AC values, not recommended to use as ac values refreshed after each request (comes with response)
+     */
+    protected async _refetchAcValues(){
+        await this._acControl.get.run();
     }
 }
 

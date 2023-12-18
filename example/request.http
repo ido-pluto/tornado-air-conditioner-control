@@ -1,0 +1,6 @@
+POST /device/control/v2/sdkcontrol?license=... HTTP/1.1
+headers...
+header1: value1
+header2: value2
+
+{"directive":...}

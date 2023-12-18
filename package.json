@@ -1,0 +1,24 @@
+{
+  "name": "aux-air-conditioner-sdk",
+  "version": "1.0.0",
+  "description": "SDK for AUX air conditioner / Tornado air conditioner",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
+  "keywords": [
+    "air-conditioner",
+    "SDK",
+    "tornado-air",
+    "aux-air"
+  ],
+  "author": "Ido S.",
+  "license": "MIT",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
